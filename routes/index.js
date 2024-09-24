@@ -25,9 +25,11 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     }
 
     const payload = {id: user.id, username: user.username};
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '2h'});
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '6h'});
 
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
+
+router.use()
 
 module.exports = router;
