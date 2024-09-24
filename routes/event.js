@@ -27,10 +27,10 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   if (user.stage === 6) {
     res.status(400).json({message: 'The user is at the end already!'});
   } else {
-
     await Credential.findByIdAndUpdate(user._id, {
       stage: user.stage + 1,
     });
+    res.json({message: 'Updated successfully', newStage: user.stage + 1});
   }
 }));
 
