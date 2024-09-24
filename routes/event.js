@@ -12,7 +12,7 @@ router.get('/round', asyncHandler(async (req, res, next) => {
     return;
   }
 
-  res.json(user.round);
+  res.json(user);
 }));
 
 router.put('/round', asyncHandler(async (req, res, next) => {
