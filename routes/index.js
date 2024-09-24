@@ -30,6 +30,4 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
 
-router.use()
-
 module.exports = router;
