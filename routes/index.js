@@ -1,8 +1,11 @@
 const router = require('express').Router();
-const Credential = require('../model/credential');
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+const Credential = require('../model/credential');
+const eventRouter = require('./event');
+const validateJWT = require('../middleware/validate_jwt');
 
 router.get('/', (req, res, next) => {
     res.json({
@@ -29,5 +32,7 @@ router.post('/login', asyncHandler(async (req, res, next) => {
 
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
+
+router.use('/event', validateJWT, eventRouter);
 
 module.exports = router;
