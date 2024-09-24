@@ -29,15 +29,16 @@ async function populateRounds() {
 }
 
 async function updateCredentials() {
-  const round1 = await Round.findOne({
-    stageNumber: 0,
-  }).exec();
-
   await Credential.updateMany({}, {
-    round: round1._id,
+    stage: 0,
   });
 
   console.log('successfully updated credentials');
+}
+
+async function getUsers() {
+  const users = await Credential.find().exec();
+  console.log(users);
 }
 
 async function main() {
@@ -48,6 +49,10 @@ async function main() {
 
     case 'update-credentials':
       await updateCredentials();
+      break;
+    
+    case 'get-users':
+      await getUsers();
       break;
     
     default:
