@@ -24,7 +24,7 @@ router.put('/round', asyncHandler(async (req, res, next) => {
     return;
   }
 
-  if (user.round.stageNumber === 6) {
+  if (user.stage === 6) {
     res.status(400).json({message: 'The user is at the end already!'});
   } else {
 
