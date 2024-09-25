@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
-const Credential = require('./model/credential');
+const User = require('./model/users');
 const Round = require('./model/round');
+const GetPath = require('./model/paths');
 
 require('dotenv').config();
 
@@ -29,7 +30,7 @@ async function populateRounds() {
 }
 
 async function updateCredentials() {
-  await Credential.updateMany({}, {
+  await User.updateMany({}, {
     stage: 0,
   });
 
@@ -37,8 +38,19 @@ async function updateCredentials() {
 }
 
 async function getUsers() {
-  const users = await Credential.find().exec();
+  const users = await User.find().exec();
   console.log(users);
+}
+
+async function getUsersWithPath(path) {
+  const user = await User.findOne({path_number: path}).exec();
+  console.log(user);
+}
+
+async function checkPath(path) {
+  const Path = GetPath(path);
+  const pathDetails = await Path.find().exec();
+  console.log(pathDetails); 
 }
 
 async function main() {
@@ -52,7 +64,16 @@ async function main() {
       break;
     
     case 'get-users':
+      if (process.argv[3]) {
+        await getUsersWithPath(process.argv[3]);
+        break;
+      }
+
       await getUsers();
+      break;
+
+    case 'check-path':
+      await checkPath(process.argv[3]);
       break;
     
     default:
