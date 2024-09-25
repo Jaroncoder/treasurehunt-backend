@@ -1,36 +1,37 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
-const Credential = require('../model/credential');
-const Round = require('../model/round');
+const User = require('../model/users');
+const getPath = require('../model/paths');
+const incrementRound = require('../utils/round');
 
 router.get('/round', asyncHandler(async (req, res, next) => {
-  const user = await Credential.findById(req.user.id).exec();
+  const user = await User.findById(req.user.id).exec();
 
   if (!user) {
     res.status(404).json({message: 'user not found'});
     return;
   }
 
-  const round = await Round.findOne({stageNumber: user.stage}).exec();
-  res.json(round);
+  res.json(user.round);
 }));
 
-router.put('/round', asyncHandler(async (req, res, next) => {
-  const user = await Credential.findById(req.user.id).exec();
+router.post('/validate', asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).exec();
+  const path = getPath(user.path_number);
 
-  if (!user) {
-    res.status(404).json({message: 'user not found'});
+  const currentRound = await path.findOne({round: user.current_round}).exec();
+
+  if (!currentRound) {
+    res.status(404).json({message: 'path not found'});
     return;
   }
 
-  if (user.stage === 6) {
-    res.status(400).json({message: 'The user is at the end already!'});
+  if (req.body.solution === currentRound.solution) {
+    
+    res.json({isCorrect: true});
   } else {
-    await Credential.findByIdAndUpdate(user._id, {
-      stage: user.stage + 1,
-    });
-    res.json({message: 'Updated successfully', newStage: user.stage + 1});
+    res.json({isCorrect: false});
   }
 }));
 
