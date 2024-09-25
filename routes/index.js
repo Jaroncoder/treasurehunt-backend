@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const Credential = require('../model/credential');
+const User = require('../model/users');
 const eventRouter = require('./event');
 const validateJWT = require('../middleware/validate_jwt');
 
@@ -14,14 +14,15 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/login', asyncHandler(async (req, res, next) => {
-    const user = await Credential.findOne({ username: req.body.username }).exec();
+    const user = await User.findOne({ username: req.body.username }).exec();
 
     if (!user) {
         return res.status(401).json({message: 'user not found'});
     }
     
     // add bcrypt
-    const verifyPassword = await bcrypt.compare(req.body.password, user.password);
+    // const verifyPassword = await bcrypt.compare(req.body.password, user.password);
+    const verifyPassword = req.body.password === user.password;
     
     if (!verifyPassword) {
         return res.status(401).json({message: 'Incorrect password'});

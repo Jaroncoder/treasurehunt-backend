@@ -1,37 +1,53 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
-const Credential = require('../model/credential');
-const Round = require('../model/round');
+const User = require('../model/users');
+const getPath = require('../model/paths');
+const incrementRound = require('../utils/round');
 
-router.get('/round', asyncHandler(async (req, res, next) => {
-  const user = await Credential.findById(req.user.id).exec();
+function caseInsensitiveEqual(a, b) {
+  return a.toLowerCase() === b.toLowerCase();
+}
 
-  if (!user) {
-    res.status(404).json({message: 'user not found'});
+router.post('/validate', asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).exec();
+  const path = getPath(user.path_number);
+
+  const currentRound = await path.findOne({round: user.current_round}).exec();
+
+  if (!currentRound) {
+    res.status(404).json({message: 'path not found'});
     return;
   }
 
-  const round = await Round.findOne({stageNumber: user.stage}).exec();
-  res.json(round);
+  if (caseInsensitiveEqual(req.body.solution, currentRound.solution)) {
+    res.json({isCorrect: true});
+  } else {
+    res.json({isCorrect: false});
+  }
+}));
+
+router.get('/round', asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).exec();
+  const path = getPath(user.path_number);
+
+  const currentRound = await path.findOne({round: user.current_round}).exec();
+
+  if (!currentRound) {
+    res.status(404).json({message: 'path not found'});
+    return;
+  }
+
+  res.json(currentRound);
 }));
 
 router.put('/round', asyncHandler(async (req, res, next) => {
-  const user = await Credential.findById(req.user.id).exec();
+  const user = await User.findById(req.user.id).exec();
 
-  if (!user) {
-    res.status(404).json({message: 'user not found'});
-    return;
-  }
-
-  if (user.stage === 6) {
-    res.status(400).json({message: 'The user is at the end already!'});
-  } else {
-    await Credential.findByIdAndUpdate(user._id, {
-      stage: user.stage + 1,
-    });
-    res.json({message: 'Updated successfully', newStage: user.stage + 1});
-  }
+  const newRound = incrementRound(user.current_round);
+  
+  await User.findByIdAndUpdate(req.user.id, {current_round: newRound}).exec();
+  res.json({newRound});
 }));
 
 module.exports = router;
