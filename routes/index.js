@@ -19,7 +19,7 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     const username = escapeRegex(req.body.username ?? '');
 
     const user = await User.findOne({
-        $regex: new RegExp(`^${username}$`, 'i'),
+        username: {$regex: new RegExp(`^${username}$`, 'i')},
     }).exec();
 
     if (!user) {
