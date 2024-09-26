@@ -44,11 +44,9 @@ router.get('/round', asyncHandler(async (req, res, next) => {
       startTime: new Date(),
     });  
   }
- 
-  res.json({
-    ...currentRound,
-    endTime: addMinutes(currentRound.startTime)
-  });
+  
+  currentRound.endTime = addMinutes(currentRound.startTime, 10);
+  res.json(currentRound)
 }));
 
 router.put('/round', asyncHandler(async (req, res, next) => {
