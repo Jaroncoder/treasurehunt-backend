@@ -10,4 +10,9 @@ router.get('/completed-rounds', asyncHandler(async (req, res, next) => {
     });
 }));
 
+router.get('/', asyncHandler(async (req, res, next) => {
+    const leaderboard = await Leaderboard.find().sort({score: -1}).exec();
+    res.json(leaderboard);
+}));
+
 module.exports = router;
