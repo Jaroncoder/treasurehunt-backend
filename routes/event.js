@@ -50,4 +50,18 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   res.json({newRound});
 }));
 
+router.get('/timer', asyncHandler(async (req, res, next) => {
+  const startTime = new Date(2024, 9, 28, 10, 15, 0, 0);
+  const currentTime = new Date();
+
+  const timeDifference = differenceInMinutes(startTime, currentTime);
+  
+  const hours = Math.floor(timeDifference / 60);
+  const minutes = timeDifference % 60;
+  const seconds = 60 - currentTime.getSeconds();
+
+  const timeString = `${hours}:${minutes}:${seconds}`;
+  res.json({time: timeString});
+}));
+
 module.exports = router;

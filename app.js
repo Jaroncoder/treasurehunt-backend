@@ -23,7 +23,7 @@ app.use(cors());
 
 const indexRouter = require('./routes/index');
 
-app.use('/api', indexRouter);
+app.use('/', indexRouter);
 
 app.use((req, res, next) => {
     next(createError(404));

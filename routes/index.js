@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../model/users');
 const eventRouter = require('./event');
-const validateJWT = require('../middleware/validate_jwt');
+const middleware = require('../middleware/validate_jwt');
 
 router.get('/', (req, res, next) => {
     res.json({
@@ -34,6 +34,6 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
 
-router.use('/event', validateJWT, eventRouter);
+router.use('/event', middleware.validateJWT, eventRouter);
 
 module.exports = router;
