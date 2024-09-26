@@ -39,11 +39,16 @@ router.get('/round', asyncHandler(async (req, res, next) => {
     return;
   }
 
-  path.findByIdAndUpdate(currentRound._id, {
-    startTime: new Date(),
+  if (typeof currentRound.startTime === 'undefined') {
+    await path.findByIdAndUpdate(currentRound._id, {
+      startTime: new Date(),
+    });  
+  }
+ 
+  res.json({
+    ...currentRound,
+    endTime: addMinutes(currentRound.startTime)
   });
-
-  res.json(currentRound);
 }));
 
 router.put('/round', asyncHandler(async (req, res, next) => {
