@@ -7,6 +7,8 @@ const getPath = require('../model/paths');
 const incrementRound = require('../utils/round');
 const caseInsensitiveEqual = require('../utils/equals');
 
+const lastRoundRouter = require('./lastround')
+
 router.post('/validate', asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).exec();
   const path = getPath(user.path_number);
@@ -70,7 +72,7 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   const newRound = incrementRound(user.current_round);
   
   await Promise.all([
-    path.findByIdAndUpdate(currentRound._id, {timeExceeded: timeLimitExceeded}),
+    path.findByIdAndUpdate(currentRound._id, {timeExceeded: timeLimitExceeded}).exec(),
     User.findByIdAndUpdate(req.user.id, {current_round: newRound}).exec(),
   ]);
 
@@ -90,5 +92,7 @@ router.get('/timer', asyncHandler(async (req, res, next) => {
   const timeString = `${hours}:${minutes}:${seconds}`;
   res.json({time: timeString});
 }));
+
+router.use('/last', lastRoundRouter);
 
 module.exports = router;
