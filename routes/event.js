@@ -5,10 +5,7 @@ const {differenceInMinutes, addMinutes, isAfter} = require('date-fns');
 const User = require('../model/users');
 const getPath = require('../model/paths');
 const incrementRound = require('../utils/round');
-
-function caseInsensitiveEqual(a, b) {
-  return a.toLowerCase() === b.toLowerCase();
-}
+const caseInsensitiveEqual = require('../utils/equals');
 
 router.post('/validate', asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).exec();
@@ -46,7 +43,7 @@ router.get('/round', asyncHandler(async (req, res, next) => {
   }
   
   currentRound.endTime = addMinutes(currentRound.startTime, 10);
-  res.json(currentRound)
+  res.json(currentRound);
 }));
 
 router.get('/current-round', asyncHandler(async (req, res, next) => {

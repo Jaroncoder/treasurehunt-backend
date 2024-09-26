@@ -7,6 +7,8 @@ const User = require('../model/users');
 const eventRouter = require('./event');
 const middleware = require('../middleware/validate_jwt');
 
+const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 router.get('/', (req, res, next) => {
     res.json({
         message: 'hello',
@@ -14,7 +16,11 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/login', asyncHandler(async (req, res, next) => {
-    const user = await User.findOne({ username: req.body.username }).exec();
+    const username = escapeRegex(req.body.username ?? '');
+
+    const user = await User.findOne({
+        $regex: new RegExp(`^${username}$`, 'i'),
+    }).exec();
 
     if (!user) {
         return res.status(401).json({message: 'user not found'});
