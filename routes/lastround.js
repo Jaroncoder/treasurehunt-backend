@@ -45,5 +45,11 @@ router.post('/:roundid', asyncHandler(async (req, res, next) => {
     res.json({roundToken: token});
 }));
 
+router.get('/available-rounds', asyncHandler (async (req, res, next) => {
+    const user = await User.findById(req.user.id).exec();
+    const availableRounds = ['A', 'B', 'C'].filter(round => !user.last_round.includes(round));
+    res.json({availableRounds});
+}))
+
 
 module.exports = router;
