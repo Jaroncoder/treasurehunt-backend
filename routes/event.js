@@ -45,7 +45,6 @@ router.get('/round', asyncHandler(async (req, res, next) => {
     });  
   }
   
-  currentRound.endTime = addMinutes(currentRound.startTime, 10);
   res.json(currentRound);
 }));
 
@@ -66,7 +65,9 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   }
 
   const currentTime = new Date();
-  const timeLimit = addMinutes(currentRound.startTime, 10);
+  const timeAlloted = user.current_round === '4' ? 20 : 10;
+
+  const timeLimit = addMinutes(currentRound.startTime, timeAlloted);
 
   const timeLimitExceeded = isAfter(currentTime, timeLimit);
 
