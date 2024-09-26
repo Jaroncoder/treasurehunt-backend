@@ -52,7 +52,7 @@ router.put('/round', asyncHandler(async (req, res, next) => {
 }));
 
 router.get('/timer', asyncHandler(async (req, res, next) => {
-  const startTime = new Date(2024, 9, 28, 10, 15, 0, 0);
+  const startTime = new Date('2024-09-28T10:15:00+05:30');;
   const currentTime = new Date();
 
   const timeDifference = differenceInMinutes(startTime, currentTime);
