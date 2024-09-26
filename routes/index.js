@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../model/users');
 const Leaderboard = require('../model/leaderboard');
 const eventRouter = require('./event');
+const leaderboardRouter = require('./leaderboard');
 const middleware = require('../middleware/validate_jwt');
 
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -51,5 +52,6 @@ router.post('/login', asyncHandler(async (req, res, next) => {
 }));
 
 router.use('/event', middleware.validateJWT, eventRouter);
+router.use('/leaderboard', middleware.validateJWT, leaderboardRouter);
 
 module.exports = router;
