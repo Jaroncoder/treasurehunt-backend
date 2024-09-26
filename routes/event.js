@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const {differenceInMinutes, addMinutes, isAfter} = require('date-fns');
-const mongoose = require('mongoose');
 
 const User = require('../model/users');
 const getPath = require('../model/paths');
@@ -74,14 +73,12 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   const scoreAdded = timeLimitExceeded ? 5 : 10;
 
   const newRound = incrementRound(user.current_round);
-  const userid = new mongoose.Types.ObjectId(req.user.id);
   
-  const result = await Promise.all([
+  await Promise.all([
     User.findByIdAndUpdate(req.user.id, {current_round: newRound}).exec(),
     Leaderboard.updateOne({ user: user._id }, {$inc: {score: scoreAdded, roundsCompleted: 1}}).exec(),
   ]);
   
-  console.log(result);
   res.json({newRound});
 }));
 

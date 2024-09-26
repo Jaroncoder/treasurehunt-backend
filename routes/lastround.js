@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../model/users');
 const getPath = require('../model/paths');
+const Leaderboard = require('../model/leaderboard');
 const caseInsensitiveEqual = require('../utils/equals');
 
 router.get('/last-round', asyncHandler(async (req, res, next) => {
@@ -41,8 +42,17 @@ router.post('/validate', asyncHandler(async (req, res, next) => {
         const Path = getPath(user.path_number);        
         const roundQuery = {round: `8${payload.roundid}`};        
         const round = await Path.findOne(roundQuery).exec();
-        
-        return res.json({isCorrect: caseInsensitiveEqual(req.body.solution, round.solution)});
+
+        const isCorrect = caseInsensitiveEqual(req.body.solution, round.solution);
+        if (!isCorrect) {
+            return res.json({isCorrect: false});
+        }
+
+        const userStatus = await Leaderboard.findOne({user: user._id}).exec();
+
+        const scoreAdded = (userStatus.roundsCompleted === 10) ? 100 : 0;
+        await Leaderboard.findOneAndUpdate({user: user._id}, {$inc: {score: scoreAdded, roundsCompleted: 1}}).exec();
+        return res.json({isCorrect: true, roundsCompleted: userStatus.roundsCompleted + 1});
     });
 }));
 
