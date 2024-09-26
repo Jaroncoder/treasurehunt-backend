@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./model/users');
 const Round = require('./model/round');
 const GetPath = require('./model/paths');
+const Leaderboard = require('./model/leaderboard');
 
 require('dotenv').config();
 
@@ -60,6 +61,42 @@ async function resetLastRounds(path) {
   console.log(user);
 }
 
+async function setRound(path, round) {
+  const user = await User.updateOne({ path_number: path }, {
+    current_round: round,
+  }).exec();
+  console.log(user);
+}
+
+async function resetUser(path) {
+  const Path = GetPath(path);
+
+  const p = await Path.find({startTime: {$exists: true}}).exec();
+  console.log(p);
+
+  const res = await Promise.all([
+    Path.updateMany({startTime: {$exists: true}}, {
+      $unset: {startTime: ''},
+    }).exec(),
+    User.updateOne({path_number: path}, {
+      last_round: [],
+      current_round: '1A',
+    }).exec(),
+  ]);
+
+  console.log(res);
+}
+
+async function getLeaderboard() {
+  const leaderboard = await Leaderboard.find().sort({score: -1}).exec();
+  console.log(leaderboard);
+}
+
+async function resetLeaderboard() {
+  const res = await Leaderboard.deleteMany().exec();
+  console.log(res);
+}
+
 async function main() {
   switch (process.argv[2]) {
     case 'populate-rounds':
@@ -87,6 +124,22 @@ async function main() {
       await resetLastRounds(process.argv[3]);
       break;
     
+    case 'set-round':
+      await setRound(process.argv[3], process.argv[4]);
+      break;
+    
+    case 'reset-user':
+      await resetUser(process.argv[3]);
+      break;
+    
+    case 'get-leaderboard':
+      await getLeaderboard();
+      break;
+
+    case 'reset-leaderboard':
+      await resetLeaderboard();
+      break;
+
     default:
       console.log('invalid argument');
   }

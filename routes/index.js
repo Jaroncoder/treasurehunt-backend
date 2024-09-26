@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const User = require('../model/users');
+const Leaderboard = require('../model/leaderboard');
 const eventRouter = require('./event');
 const middleware = require('../middleware/validate_jwt');
 
@@ -36,6 +37,15 @@ router.post('/login', asyncHandler(async (req, res, next) => {
 
     const payload = {id: user.id, username: user.username};
     const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '6h'});
+
+    const userInLeaderboard = await Leaderboard.findOne({user: user.id}).exec();
+    if (!userInLeaderboard) {
+        const newUser = new Leaderboard({
+            user: user._id,
+            score: 0,
+        });
+        await newUser.save();
+    }
 
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));

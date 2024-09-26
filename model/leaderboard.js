@@ -6,11 +6,14 @@ const leaderboardSchema = new mongoose.Schema({
         ref: 'users', 
         required: true,
     },
-    position: { type: Number, required: true, },
-    createdAt: {
-        type: Date,
-        default: new Date(),
-    }
+    score: {
+        type: Number,
+        default: 0,
+    },
+    roundsCompleted: {
+        type: Number,
+        default: 0,
+    },
 });
 
 module.exports = mongoose.model('Leaderboard', leaderboardSchema);

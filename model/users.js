@@ -9,7 +9,11 @@ const credentialSchema = new mongoose.Schema({
     last_round: [{
         type: String,
         required: false,
-    }]
+    }],
+    last_rounds_completed: {
+        type: Number,
+        default: 0,
+    }
 });
 
 module.exports = mongoose.model('users', credentialSchema);

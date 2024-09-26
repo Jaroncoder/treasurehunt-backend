@@ -45,7 +45,6 @@ router.post('/validate', asyncHandler(async (req, res, next) => {
         return res.json({isCorrect: caseInsensitiveEqual(req.body.solution, round.solution)});
     });
 }));
-  
 
 router.post('/:roundid', asyncHandler(async (req, res, next) => {
     const { roundid } = req.params;
