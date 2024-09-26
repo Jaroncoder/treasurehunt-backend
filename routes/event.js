@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const {differenceInMinutes} = require('date-fns');
+const {differenceInMinutes, addMinutes, isAfter} = require('date-fns');
 
 const User = require('../model/users');
 const getPath = require('../model/paths');
@@ -39,15 +39,36 @@ router.get('/round', asyncHandler(async (req, res, next) => {
     return;
   }
 
+  path.findByIdAndUpdate(currentRound._id, {
+    startTime: new Date(),
+  });
+
   res.json(currentRound);
 }));
 
 router.put('/round', asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).exec();
+  const path = getPath(user.path_number);
+
+  const currentRound = await path.findOne({round: user.current_round}).exec();
+
+  if (!currentRound) {
+    res.status(404).json({message: 'path not found'});
+    return;
+  }
+
+  const currentTime = new Date();
+  const timeLimit = addMinutes(currentRound.startTime, 10);
+
+  const timeLimitExceeded = isAfter(currentTime, timeLimit);
 
   const newRound = incrementRound(user.current_round);
   
-  await User.findByIdAndUpdate(req.user.id, {current_round: newRound}).exec();
+  await Promise.all([
+    path.findByIdAndUpdate(currentRound._id, {timeExceeded: timeLimitExceeded}),
+    User.findByIdAndUpdate(req.user.id, {current_round: newRound}).exec(),
+  ]);
+
   res.json({newRound});
 }));
 

@@ -7,6 +7,8 @@ const pathSchema = new mongoose.Schema({
   venue: {type: String, required: false},
   image_url: {type: String, required: false},
   hint: {type: String, required: false},
+  startTime: {type: Date, required: false},
+  timeExceeded: {type: Boolean, default: false}
 });
 
 const returnModelforPath = path_number => {
