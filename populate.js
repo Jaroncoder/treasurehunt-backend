@@ -53,6 +53,13 @@ async function checkPath(path) {
   console.log(pathDetails); 
 }
 
+async function resetLastRounds(path) {
+  const user = await User.updateOne({path_number: path}, {
+    last_round: [],
+  }).exec();
+  console.log(user);
+}
+
 async function main() {
   switch (process.argv[2]) {
     case 'populate-rounds':
@@ -74,6 +81,10 @@ async function main() {
 
     case 'check-path':
       await checkPath(process.argv[3]);
+      break;
+
+    case 'reset-last':
+      await resetLastRounds(process.argv[3]);
       break;
     
     default:

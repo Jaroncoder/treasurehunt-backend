@@ -8,7 +8,6 @@ const caseInsensitiveEqual = require('../utils/equals');
 
 router.get('/last-round', asyncHandler(async (req, res, next) => {
     const { token } = req.query;
-    console.log('Received token:', token);
     
     jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
         if (err) {
@@ -35,7 +34,6 @@ router.post('/validate', asyncHandler(async (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
         if (err) {
-            console.error('JWT verification error:', err);
             return res.status(403).json({message: 'invalid or expired token'});
         }
 
