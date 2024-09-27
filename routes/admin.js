@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const jwt = require('json-web-token');
+const jwt = require('jsonwebtoken');
 
 const globals = require('../utils/globals');
 
