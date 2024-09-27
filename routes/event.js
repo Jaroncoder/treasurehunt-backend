@@ -54,7 +54,7 @@ router.get('/current-round', asyncHandler(async (req, res, next) => {
   const path = getPath(user.path_number);
 
   const venue = await path.findOne({round: user.current_round}, {venue: 1}).exec();
-  res.json({currentRound: user.current_round, venue: venue.venue});
+  res.json({currentRound: user.current_round, venue: venue.venue, userPath: user.path_number});
 }))
 
 router.put('/round', asyncHandler(async (req, res, next) => {

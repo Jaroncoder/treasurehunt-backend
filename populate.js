@@ -74,7 +74,6 @@ async function resetUser(path) {
   const Path = GetPath(path);
 
   const p = await Path.find({startTime: {$exists: true}}).exec();
-  console.log(p);
 
   const res = await Promise.all([
     Path.updateMany({startTime: {$exists: true}}, {
@@ -166,4 +165,4 @@ async function main() {
   }
 }
 
-main().catch(err => console.error(err));
+main().catch(err => console.error(err)).finally(() => mongoose.connection.close());
