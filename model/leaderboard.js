@@ -14,6 +14,10 @@ const leaderboardSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    finishedAt: {
+        type: Date,
+        required: false,
+    },
 });
 
 module.exports = mongoose.model('Leaderboard', leaderboardSchema);

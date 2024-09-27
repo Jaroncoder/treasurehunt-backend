@@ -50,8 +50,12 @@ router.post('/validate', asyncHandler(async (req, res, next) => {
 
         const userStatus = await Leaderboard.findOne({user: user._id}).exec();
 
-        const scoreAdded = (userStatus.roundsCompleted === 10) ? 100 : 0;
-        await Leaderboard.findOneAndUpdate({user: user._id}, {$inc: {score: scoreAdded, roundsCompleted: 1}}).exec();
+        const allRoundsDone = userStatus.roundsCompleted === 10;
+        const scoreAdded = allRoundsDone ? 100 : 0;
+        await Leaderboard.findOneAndUpdate({user: user._id}, {
+            $inc: {score: scoreAdded, roundsCompleted: 1},
+            finishedAt: allRoundsDone ? new Date() : null
+        }).exec();
         return res.json({isCorrect: true, roundsCompleted: userStatus.roundsCompleted + 1});
     });
 }));
