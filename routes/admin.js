@@ -20,4 +20,9 @@ router.get('/extend', asyncHandler(async (req, res, next) => {
     res.json({message: 'Event extended', newEndTime});
 }));
 
+router.get('/status', asyncHandler(async (req, res, next) => {
+    const status = globals.isRunning();
+    res.json({status});
+}));
+
 module.exports = router;
