@@ -51,7 +51,7 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
 
-router.use('/event', middleware.validateJWT, eventRouter);
-router.use('/leaderboard', middleware.validateJWT, leaderboardRouter);
+router.use('/event', middleware.checkIfEventIsInProgress, middleware.validateJWT, eventRouter);
+router.use('/leaderboard', middleware.checkIfEventIsInProgress ,middleware.validateJWT, leaderboardRouter);
 
 module.exports = router;

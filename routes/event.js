@@ -7,6 +7,7 @@ const getPath = require('../model/paths');
 const Leaderboard = require('../model/leaderboard');
 const incrementRound = require('../utils/round');
 const caseInsensitiveEqual = require('../utils/equals');
+const globals = require('../utils/globals');
 
 const lastRoundRouter = require('./lastround')
 
@@ -83,11 +84,13 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   res.json({newRound});
 }));
 
-router.get('/timer', asyncHandler(async (req, res, next) => {
-  const startTime = new Date('2024-09-28T10:15:00+05:30');;
+router.get('/timer/:mode', asyncHandler(async (req, res, next) => {
+  const mode = req.params.mode ?? 'start';
+
+  const time = mode === 'start' ? globals.getStartTime() : globals.getEndTime();
   const currentTime = new Date();
 
-  const timeDifference = differenceInMinutes(startTime, currentTime);
+  const timeDifference = differenceInMinutes(time, currentTime);
   
   const hours = Math.floor(timeDifference / 60);
   const minutes = timeDifference % 60;

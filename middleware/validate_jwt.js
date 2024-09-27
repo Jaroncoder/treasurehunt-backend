@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { isRunning } = require('../utils/globals');
 
 function validateJWT(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -25,7 +26,14 @@ function validateJWT(req, res, next) {
 
 function isAdmin(req, res, next) {
     if (req.user?.username !== 'admin') {
-        return res.status(403).json({ error: 'You are not authorized to access this resource' });
+        return res.status(403).json({ message: 'You are not authorized to access this resource' });
+    }
+    next();
+}
+
+function checkIfEventIsInProgress(req, res, next) {
+    if (!isRunning()) {
+        return res.status(403).json({ message: 'The event is not in progress' });
     }
     next();
 }
@@ -33,4 +41,5 @@ function isAdmin(req, res, next) {
 module.exports = {
     validateJWT,
     isAdmin,
+    checkIfEventIsInProgress,
 };
