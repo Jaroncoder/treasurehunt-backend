@@ -8,6 +8,7 @@ const pathSchema = new mongoose.Schema({
   image_url: {type: String, required: false},
   hint: {type: String, required: false},
   startTime: {type: Date, required: false},
+  questionHint: {type: String, required: false},
 });
 
 const returnModelforPath = path_number => {

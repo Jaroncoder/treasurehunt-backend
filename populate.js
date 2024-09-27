@@ -5,6 +5,8 @@ const Round = require('./model/round');
 const GetPath = require('./model/paths');
 const Leaderboard = require('./model/leaderboard');
 
+const hints = require('./hints.json');
+
 require('dotenv').config();
 
 mongoose.set('strictQuery', false);
@@ -97,6 +99,14 @@ async function resetLeaderboard() {
   console.log(res);
 }
 
+async function updateHints(path) {
+  const Path = GetPath(path);
+  let rounds = Object.keys(hints);
+  const requests = rounds.map(round => Path.updateOne({round}, {questionHint: hints[round]}).exec());
+  const res = await Promise.all(requests);
+  console.log(res);
+}
+
 async function main() {
   switch (process.argv[2]) {
     case 'populate-rounds':
@@ -138,6 +148,10 @@ async function main() {
 
     case 'reset-leaderboard':
       await resetLeaderboard();
+      break;
+    
+    case 'update-hints':
+      await updateHints(process.argv[3]);
       break;
 
     default:
