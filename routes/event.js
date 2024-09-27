@@ -46,7 +46,7 @@ router.get('/round', asyncHandler(async (req, res, next) => {
     });  
   }
   
-  res.json(currentRound);
+  res.json({round: currentRound, path: user.path_number});
 }));
 
 router.get('/current-round', asyncHandler(async (req, res, next) => {

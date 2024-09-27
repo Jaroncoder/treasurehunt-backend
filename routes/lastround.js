@@ -20,14 +20,14 @@ router.get('/last-round', asyncHandler(async (req, res, next) => {
         const Path = getPath(user.path_number);        
         const roundQuery = {round: `8${payload.roundid}`};        
         const round = await Path.findOne(roundQuery).exec();        
-        return res.json(round);
+        return res.json({round, path: user.path_number});
     });
 }));
 
 router.get('/available-rounds', asyncHandler (async (req, res, next) => {
     const user = await User.findById(req.user.id).exec();
     const availableRounds = ['A', 'B', 'C'].filter(round => !user.last_round.includes(round));
-    res.json({availableRounds});
+    res.json({availableRounds, path: user.path_number});
 }));
 
 router.post('/validate', asyncHandler(async (req, res, next) => {
