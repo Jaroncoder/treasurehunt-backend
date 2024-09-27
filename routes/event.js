@@ -84,10 +84,10 @@ router.put('/round', asyncHandler(async (req, res, next) => {
   res.json({newRound});
 }));
 
-router.get('/timer/:mode', asyncHandler(async (req, res, next) => {
+router.get('/timer', asyncHandler(async (req, res, next) => {
   const mode = req.params.mode ?? 'start';
 
-  const time = mode === 'start' ? globals.getStartTime() : globals.getEndTime();
+  const time = globals.isRunning() ? globals.getStartTime() : globals.getEndTime();
   const currentTime = new Date();
 
   const timeDifference = differenceInMinutes(time, currentTime);

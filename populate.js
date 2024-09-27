@@ -154,6 +154,13 @@ async function main() {
       await updateHints(process.argv[3]);
       break;
 
+    case 'update-all-question-hints':
+      for (let i = 1; i <= 60; i++) {
+        await updateHints(i.toString());
+        console.log(i);
+      }
+      break;
+
     default:
       console.log('invalid argument');
   }

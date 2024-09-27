@@ -14,7 +14,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-// uncomment once frontend url is finalized
 // app.use(cors({
 //     origin: process.env.FRONTEND_URL,
 // }));
