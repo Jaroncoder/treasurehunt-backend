@@ -5,9 +5,11 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../model/users');
 const Leaderboard = require('../model/leaderboard');
+const middleware = require('../middleware/validate_jwt');
+
 const eventRouter = require('./event');
 const leaderboardRouter = require('./leaderboard');
-const middleware = require('../middleware/validate_jwt');
+const adminRouter = require('./admin');
 
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -51,7 +53,24 @@ router.post('/login', asyncHandler(async (req, res, next) => {
     res.json({message: 'Authentication successful', token: `Bearer ${token}`});
 }));
 
+router.post('/admin-login', asyncHandler (async (req, res, next) => {
+    const { adminPassword } = req.body;
+    if (adminPassword !== process.env.ADMIN_PASSWORD) {
+        const err = new Error('Page not found');
+        err.status = 404;
+        return next(err);
+    }
+    const payload = { id: 'admin' };
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' }, (err, token) => {
+        if (err) {
+            return next(err);
+        }
+        res.json({ message: 'Authentication successful', token: `Bearer ${token}` });
+    });
+}));
+
 router.use('/event', middleware.checkIfEventIsInProgress, middleware.validateJWT, eventRouter);
 router.use('/leaderboard', middleware.checkIfEventIsInProgress ,middleware.validateJWT, leaderboardRouter);
+router.use('/admin', middleware.isAdmin, adminRouter);
 
 module.exports = router;

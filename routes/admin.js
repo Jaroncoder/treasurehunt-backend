@@ -1,9 +1,7 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
+const jwt = require('json-web-token');
 
-const User = require('../model/users');
-const Leaderboard = require('../model/leaderboard');
-const GetPath = require('../model/path');
 const globals = require('../utils/globals');
 
 router.get('/start', asyncHandler(async (req, res, next) => {
@@ -21,3 +19,5 @@ router.get('/extend', asyncHandler(async (req, res, next) => {
     const newEndTime = globals.extendEndTime(minutes);
     res.json({message: 'Event extended', newEndTime});
 }));
+
+module.exports = router;
