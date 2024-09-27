@@ -52,9 +52,12 @@ router.get('/round', asyncHandler(async (req, res, next) => {
 router.get('/current-round', asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).exec();
   const path = getPath(user.path_number);
+  let venue = null;
 
-  const venue = await path.findOne({round: user.current_round}, {venue: 1}).exec();
-  res.json({currentRound: user.current_round, venue: venue.venue, userPath: user.path_number});
+  if (user.current_round !== '8') {
+    venue = await path.findOne({round: user.current_round}, {venue: 1}).exec();
+  }
+  res.json({currentRound: user.current_round, venue: venue?.venue, userPath: user.path_number});
 }))
 
 router.put('/round', asyncHandler(async (req, res, next) => {
