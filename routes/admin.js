@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 
 const globals = require('../utils/globals');
+const leaderboardRouter = require('./leaderboard');
 
 router.get('/start', asyncHandler(async (req, res, next) => {
     globals.start();
@@ -24,5 +25,7 @@ router.get('/status', asyncHandler(async (req, res, next) => {
     const status = globals.isRunning();
     res.json({status});
 }));
+
+router.use('/leaderboard', leaderboardRouter);
 
 module.exports = router;
