@@ -24,7 +24,7 @@ module.exports = {
     },
     extendEndTime: minutes => {
         globalState.endTime = addMinutes(globalState.endTime, minutes);
-        return globalState.endTime;
+        return globalState.endTime.toLocaleTimeString('en-IN');
     },
     setStartTime: time => {
         globalState.startTime = time;

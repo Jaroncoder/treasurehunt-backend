@@ -16,7 +16,7 @@ router.get('/stop', asyncHandler(async (req, res, next) => {
 
 router.get('/extend', asyncHandler(async (req, res, next) => {
     const { minutes } = req.query;
-    const newEndTime = globals.extendEndTime(minutes);
+    const newEndTime = globals.extendEndTime(parseInt(minutes));
     res.json({message: 'Event extended', newEndTime});
 }));
 
