@@ -3,7 +3,7 @@ const { addMinutes } = require('date-fns');
 const globalState = {
     isRunning: true,
     startTime: new Date('2024-09-28T10:15:00+05:30'),
-    endTime: new Date('2024-09-28T12:15:00+05:30'),
+    endTime: new Date('2024-09-28T01:15:00+05:30'),
 }
 
 module.exports = {

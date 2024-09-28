@@ -106,6 +106,31 @@ async function updateHints(path) {
   console.log(res);
 }
 
+async function getUserByUsername(username) {
+  const user = await User.findOne({username}).exec();
+  console.log(user);
+}
+
+async function updateUser(username, newUsername, newPassword) {
+  const user = await User.findOneAndUpdate({
+    username,
+  }, {
+    username: newUsername,
+    password: newPassword,
+  }).exec();
+  console.log(user);
+}
+
+async function updateAllTeams() {
+  const users = await User.find({}).exec();
+  const p = users.map(el => User.updateOne({path_number: el.path_number}, {
+    username: `team${el.path_number}`,
+    password: `Xplore@${el.path_number}`,
+  }).exec());
+  const p1 = await Promise.all(p);
+  console.log(p);
+}
+
 async function main() {
   switch (process.argv[2]) {
     case 'populate-rounds':
@@ -157,6 +182,24 @@ async function main() {
       for (let i = 1; i <= 60; i++) {
         await updateHints(i.toString());
         console.log(i);
+      }
+      break;
+    
+    case 'get-user-by-name':
+      await getUserByUsername(process.argv[3]);
+      break;
+
+    case 'update-user':
+      await updateUser(process.argv[3], process.argv[4], process.argv[5]);
+      break;
+    
+    case 'update-all-users':
+      await updateAllTeams();
+      break;
+    
+    case 'reset-all-users':
+      for (let i = 1; i <= 60; i++) {
+        await resetUser(i.toString());
       }
       break;
 
